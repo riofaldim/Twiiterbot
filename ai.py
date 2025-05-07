@@ -15,7 +15,7 @@ api = tweepy.API(auth)
 
 # Tweet content
 tweet_text = "Jasa Lacak Lokasi Akurat ✅"
-image_path = "https://i.imgur.com/VAeKzPa.jpeg"
+image_path = "1743945574066.jpg"
 
 # Upload media and tweet
 media = api.media_upload(image_path)
