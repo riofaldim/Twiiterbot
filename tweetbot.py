@@ -1,52 +1,65 @@
 import os
-
-consumer_key = os.getenv("CONSUMER_KEY")
-consumer_secret = os.getenv("CONSUMER_SECRET")
-access_key = os.getenv("ACCESS_KEY")
-access_secret = os.getenv("ACCESS_SECRET") 
-
 import tweepy
 import time
 
+# Load environment variables
+consumer_key = os.getenv("CONSUMER_KEY")
+consumer_secret = os.getenv("CONSUMER_SECRET")
+access_key = os.getenv("ACCESS_KEY")
+access_secret = os.getenv("ACCESS_SECRET")
+
+# Authenticate with Twitter
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_key, access_secret)
+api = tweepy.API(auth, wait_on_rate_limit=True)
 
-api = tweepy.API(auth)
-
+# Verify credentials
 try:
     api.verify_credentials()
-    print("Authentication Ok")
-except:
-    print("Error during exception")
+    print("Authentication OK")
+except tweepy.TweepyException as e:
+    print(f"Error during authentication: {e}")
+    exit()
+
+# Helper functions for tracking last seen tweet ID
+SEEN_FILE = 'seen.txt'
 
 def read_seen(file):
-    file_read=open(file,'r')
-    last_seen_id=int(file_read.read().strip())
-    file_read.close()
-    return (last_seen_id)
+    try:
+        with open(file, 'r') as f:
+            return int(f.read().strip())
+    except (FileNotFoundError, ValueError):
+        return 1  # Return a default minimum tweet ID if file doesn't exist
 
-def store_seen(file,last_seen_id):
-    file_write=open(file,'w')
-    file_write.write(str(last_seen_id))
-    file_write.close()
-    return
+def store_seen(file, last_seen_id):
+    with open(file, 'w') as f:
+        f.write(str(last_seen_id))
 
-file='seen.txt'
-
+# Main reply function
 def reply():
-    tweets=api.mentions_timeline(since_id=read_seen(file),tweet_mode='extended')
-    for tweet in reversed(tweets):
-        if '#hello' in tweet.full_text:
-            api.update_status(status="@"+tweet.user.screen_name+"  All the best",in_reply_to_status_id=tweet.id)
-            api.create_favorite(tweet.id)
-            api.retweet(tweet.id)
-            print("replied-"+str(tweet.id))
-            store_seen(file,tweet.id)    
-    
+    last_seen_id = read_seen(SEEN_FILE)
+    try:
+        tweets = api.mentions_timeline(since_id=last_seen_id, tweet_mode='extended')
+        for tweet in reversed(tweets):
+            if '#hello' in tweet.full_text.lower():
+                username = tweet.user.screen_name
+                print(f"Replying to @{username} (ID: {tweet.id})")
+                try:
+                    api.update_status(
+                        status=f"@{username} All the best!",
+                        in_reply_to_status_id=tweet.id
+                    )
+                    api.create_favorite(tweet.id)
+                    api.retweet(tweet.id)
+                except tweepy.TweepyException as e:
+                    print(f"Error replying to tweet: {e}")
+                store_seen(SEEN_FILE, tweet.id)
+    except tweepy.TweepyException as e:
+        print(f"Error fetching mentions: {e}")
 
-while True:
-    reply()
-    time.sleep(15)
-    print("ReLoad.....")
-
-    
+# Loop execution
+if __name__ == "__main__":
+    while True:
+        reply()
+        print("Checked mentions... Waiting...")
+        time.sleep(15)
