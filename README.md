@@ -1,61 +1,37 @@
-# 📌 Twitter Bot with Tweepy
+# Twitter bot
 
-A Twitter bot that listens for mentions with the hashtag #hello and replies with "All the best" while also liking and retweeting the tweet
+A GitHub Actions Repository for Automated Tweeting of Quotes and Mixed Emojis Using Python.
 
-## 🚀 Overview
+## Overview
 
-This project utilizes Tweepy to interact with the Twitter API. The bot continuously checks for new mentions and automatically responds, likes, and retweets tweets containing a specific hashtag.
+This project is a GitHub Actions repository that automates the process of tweeting quotes on Twitter. The repository runs a workflow every hour, which fetches a random quote from a `quotes.json` file and publishes it on Twitter (https://twitter.com/coronavirusbot0).
 
-## 🛠 Features
+## Features
 
-✅ Monitors mentions in real-time
-✅ Replies to tweets containing #hello
-✅ Likes and retweets mentioned tweets
-✅ Stores processed tweet IDs to avoid duplicate replies
+- Fetches a random quote from `quotes.json` every hour.
+- Gets emixed emoji from a api and post ever hour
+- Tweets the quote, mixed emoji on Twitter automatically.
 
-## 🏗 Tech Stack
+## Prerequisites
 
-- Programming Language: Python
-- Libraries: Tweepy, OS, Time
-= APIs: Twitter API
+To use this GitHub Actions repository, you need to have the following:
 
-## 🎬 Installation & Usage
+- A Twitter Developer Account: Obtain API keys and access tokens from the Twitter Developer Portal.
+- Add your API keys as secret keys in actions in secrets and variables in settings
+- A `quotes.json` File: Create a JSON file containing a collection of quotes to be tweeted.
 
-### Prerequisites
-1. Twitter Developer Account - You need API keys from Twitter.
-2. Python 3.x installed on your system.
+## Steps to add workflow
+Go to Actions -> New Workflow -> Configure Python Application -> Edit python-app.yml based on requirement -> commit changes
 
-### Installation
-1.Clone the repository:
-```
-git clone https://github.com/yourusername/tweetbot.git
-cd tweetbot
-```
-2.Install dependencies:
-```
-pip install -r requirements.txt
-```
-3.Set up environment variables (.env file):
-```
-CONSUMER_KEY=your_consumer_key
-CONSUMER_SECRET=your_consumer_secret
-ACCESS_KEY=your_access_key
-ACCESS_SECRET=your_access_secret
-```
-4.Run the bot:
-```
-python tweetbot.py
-```
-## 📂 Project Structure
-📦 tweetbot
- ┣ 📜 tweetbot.py         # Main script
- ┣ 📜 seen.txt            # Stores last processed tweet ID
- ┣ 📜 .env                # Environment variables
- ┣ 📜 README.md           # Project documentation
- ┣ 📜 requirements.txt    # Dependencies
- ┣ 📜 .gitignore          # Ignore unnecessary files
- 
-## 📜 License
-This project is licensed under the MIT License. 
+## Customization
 
-**Ease your tweeting with tweetbot**
+Feel free to customize this repository to suit your requirements. You can modify the workflow schedule, or enhance the tweet formatting.
+
+## Contributions
+
+Contributions to this project are welcome. If you have any ideas, bug fixes, or improvements, feel free to open an issue or submit a pull request.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+
