@@ -24,7 +24,7 @@ jobs:
     - name: Run Twitter bot
       run: python main.py
       env:
-        CONSUMER_KEY: ${{ secrets.TWITTER_API_KEY }}
+        consumer_key: ${{ secrets.TWITTER_API_KEY }}
         CONSUMER_SECRET: ${{ secrets.TWITTER_API_SECRET_KEY }}
-        ACCESS_KEY: ${{ secrets.TWITTER_ACCESS_TOKEN }}
-        ACCESS_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
+        consumer_secret: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+        access_token_secret: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
