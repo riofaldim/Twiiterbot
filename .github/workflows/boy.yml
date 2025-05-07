@@ -22,10 +22,9 @@ jobs:
       run: pip install -r requirements.txt
 
     - name: Run Twitter bot
-      run: python emoji.py
+      run: python main.py
       env:
         CONSUMER_KEY: ${{ secrets.TWITTER_API_KEY }}
         CONSUMER_SECRET: ${{ secrets.TWITTER_API_SECRET_KEY }}
         ACCESS_KEY: ${{ secrets.TWITTER_ACCESS_TOKEN }}
         ACCESS_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
-        EMOJI_URL: ${{ secrets.EMOJI_URL }}
