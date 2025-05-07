@@ -2,7 +2,8 @@ import os
 import tweepy
 import json
 import requests
-
+from dotenv import load_dotenv
+load_dotenv()
 # Load Twitter API credentials from environment
 consumer_key = os.environ['TWITTER_API_KEY']
 consumer_secret = os.environ['TWITTER_API_SECRET_KEY']
