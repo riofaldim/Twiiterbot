@@ -27,4 +27,4 @@ jobs:
           pip install tweepy requests python-dotenv
 
       - name: Run bot
-        run: python main.py
+        run: python ai.py
