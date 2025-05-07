@@ -1,52 +1,62 @@
 import os
 import tweepy
-import datetime
 import json
 import requests
 
+# Load Twitter API credentials from environment
 consumer_key = os.environ['TWITTER_API_KEY']
 consumer_secret = os.environ['TWITTER_API_SECRET_KEY']
 access_token = os.environ['TWITTER_ACCESS_TOKEN']
 access_token_secret = os.environ['TWITTER_ACCESS_TOKEN_SECRET']
 
-#auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-#auth.set_access_token(access_token, access_token_secret)
-#api = tweepy.API(auth)
-#api.update_status(status='test')
-#print("images tweeted")
+# Load quotes from JSON file
 with open('quotes.json', 'r') as f:
     quotes = json.load(f)
-    
-# Load last tweeted quote index from a file
-if os.path.exists('last_tweet_index.txt'):
-    with open('last_tweet_index.txt', 'r') as f:
-        tweet_index = int(f.read().strip())
+
+# Load last tweeted quote index from file, default to -1 if not found
+index_file = 'last_tweet_index.txt'
+if os.path.exists(index_file):
+    with open(index_file, 'r') as f:
+        try:
+            tweet_index = int(f.read().strip())
+        except ValueError:
+            tweet_index = -1
 else:
     tweet_index = -1
 
-print(f'index : {tweet_index}')
-# Get the quote to tweet
+# Calculate next index
+tweet_index = (tweet_index + 1) % len(quotes)
 quote = quotes[tweet_index]
-# Compose the tweet text
 tweet_text = f'"{quote["quote"]}" - {quote["character"]}'
-#image_url = quote['image']
-#filename = f"image.jpg"
-#image = requests.get(image_url).content
-#with open(filename, "wb") as f:
-#    f.write(image)
-#media_upload = api.media_upload(filename)
-#tweet_media_id = media_upload.media_id
-#api.update_status(status=tweet_text, media_ids=[tweet_media_id])
-#api.update_status(status=tweet_text)
-client = tweepy.Client(consumer_key=consumer_key,
-                    consumer_secret=consumer_secret,
-                    access_token=access_token,
-                    access_token_secret=access_token_secret)
-# Replace the text with whatever you want to Tweet about
+
+# Optional: Tweet with image
+# image_url = quote.get('image')
+# if image_url:
+#     image_data = requests.get(image_url).content
+#     with open("temp.jpg", "wb") as img_file:
+#         img_file.write(image_data)
+
+#     client = tweepy.Client(
+#         consumer_key=consumer_key,
+#         consumer_secret=consumer_secret,
+#         access_token=access_token,
+#         access_token_secret=access_token_secret
+#     )
+#     media = client.media_upload("temp.jpg")
+#     response = client.create_tweet(text=tweet_text, media_ids=[media.media_id])
+# else:
+
+# Authenticate and tweet
+client = tweepy.Client(
+    consumer_key=consumer_key,
+    consumer_secret=consumer_secret,
+    access_token=access_token,
+    access_token_secret=access_token_secret
+)
+
 response = client.create_tweet(text=tweet_text)
 print(f'Tweeted: {tweet_text}')
-next_tweet_index = (tweet_index + 1) 
-if next_tweet_index not in range(0, 15):
-     next_tweet_index = 0
-with open('last_tweet_index.txt', 'w') as f:
-    f.write(str(next_tweet_index))
+
+# Save next index
+with open(index_file, 'w') as f:
+    f.write(str(tweet_index))
