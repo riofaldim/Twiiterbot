@@ -29,32 +29,28 @@ tweet_index = (tweet_index + 1) % len(quotes)
 quote = quotes[tweet_index]
 tweet_text = f'"{quote["quote"]}" - {quote["character"]}'
 
-# Optional: Tweet with image
-# image_url = quote.get('image')
-# if image_url:
-#     image_data = requests.get(image_url).content
-#     with open("temp.jpg", "wb") as img_file:
-#         img_file.write(image_data)
-
-#     client = tweepy.Client(
-#         consumer_key=consumer_key,
-#         consumer_secret=consumer_secret,
-#         access_token=access_token,
-#         access_token_secret=access_token_secret
-#     )
-#     media = client.media_upload("temp.jpg")
-#     response = client.create_tweet(text=tweet_text, media_ids=[media.media_id])
-# else:
-
-# Authenticate and tweet
-client = tweepy.Client(
-    consumer_key=consumer_key,
-    consumer_secret=consumer_secret,
-    access_token=access_token,
-    access_token_secret=access_token_secret
+# Authenticate using OAuth1 (needed for media upload & legacy actions)
+auth = tweepy.OAuth1UserHandler(
+    consumer_key,
+    consumer_secret,
+    access_token,
+    access_token_secret
 )
+api = tweepy.API(auth)
 
-response = client.create_tweet(text=tweet_text)
+# Optional: Tweet with image
+image_url = quote.get('image')
+if image_url:
+    image_data = requests.get(image_url).content
+    with open("temp.jpg", "wb") as img_file:
+        img_file.write(image_data)
+    
+    media = api.media_upload("temp.jpg")
+    response = api.update_status(status=tweet_text, media_ids=[media.media_id])
+    os.remove("temp.jpg")  # Clean up
+else:
+    response = api.update_status(status=tweet_text)
+
 print(f'Tweeted: {tweet_text}')
 
 # Save next index
