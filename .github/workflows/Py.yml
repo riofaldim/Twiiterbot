@@ -1,7 +1,9 @@
-name: tw Bot
+name: Twt Bot
 
 on:
-  workflow_dispatch:  # Manual trigger, bisa diganti dengan schedule (see below)
+  schedule:
+    - cron: '0 9 * * *'  # Setiap hari jam 09:00 UTC (16:00 WIB)
+  workflow_dispatch:        # Masih bisa dijalankan manual juga
 
 jobs:
   tweet:
@@ -19,12 +21,11 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
+          python-version: '3.10'
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install tweepy requests python-dotenv
+          pip install tweepy requests
 
-      - name: Run bot
-        run: python ai.py
+      - name: Run tweet bot
+        run: python open.py  # Ganti sesuai nama file Python Anda
